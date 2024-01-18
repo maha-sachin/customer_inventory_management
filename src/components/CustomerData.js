@@ -7,6 +7,8 @@ function CustomerData() {
   const [customers, setCustomers] = useState([]);
   const [editingCustomer, setEditingCustomer] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
+
   const customerUrl =
     "https://waveaccounting.github.io/se-challenge-fe-customers/settings.json";
   const fetchCustomers = async () => {
@@ -41,17 +43,24 @@ function CustomerData() {
   };
 
   const saveCustomerHandler = (formData) => {
-    console.log("Saving customer:", formData);
+    setSuccessMessage("Customer saved successfully!");
+    console.log("Success Message (before closing modal):", successMessage);
+    setTimeout(() => {
+      setSuccessMessage(null);
+      console.log("Success Message (after closing modal):", successMessage);
+    }, 1500);
     setEditingCustomer(null);
     closeModalHandler();
+    console.log("Success Message (after closing modal):", successMessage);
   };
 
   return (
-    <div className="mx-auto ">
+    <div className="mx-auto" data-testid="CustomerData">
       <CustomerList
         customers={customers}
         onEditCustomers={editCustomerHandler}
         onOpenModal={openModalHandler}
+        successMessage={successMessage}
       />
       {editingCustomer && (
         <CustomerForm
@@ -59,6 +68,8 @@ function CustomerData() {
           onSaveCustomer={saveCustomerHandler}
           isOpen={isModalOpen}
           onClose={closeModalHandler}
+          successMessage={successMessage}
+          setSuccessMessage={setSuccessMessage}
         />
       )}
     </div>

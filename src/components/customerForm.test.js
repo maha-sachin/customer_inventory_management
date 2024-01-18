@@ -1,5 +1,4 @@
-// CustomerForm.test.js
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import CustomerForm from "./CustomerForm";
 
@@ -9,11 +8,12 @@ describe("CustomerForm Component", () => {
 
   const defaultProps = {
     customer: {
-      country: "",
+      country: "CA", // to ensure the province data gets populated
       name: "",
       email: "",
       channel: "",
       address: "",
+      city: "",
       postal: "",
       province: "",
     },
@@ -22,26 +22,58 @@ describe("CustomerForm Component", () => {
     onClose: onCloseMock,
   };
 
-  it("renders CustomerForm component", () => {
-    render(<CustomerForm {...defaultProps} />);
+  it("renders CustomerForm component with given data", () => {
+    const formData = {
+      ...defaultProps,
+      customer: {
+        name: "John Doe",
+        email: "john@example.com",
+        channel: "website",
+        address: "123 Main St",
+        city: "Toronto",
+        postal: "12345",
+        country: "CA",
+        province: "ON",
+      },
+    };
+    render(<CustomerForm {...formData} />);
+    // asserting labels
     expect(screen.getByText("Edit Customer")).toBeInTheDocument();
+    expect(screen.getByText("Name:")).toBeInTheDocument();
+    expect(screen.getByText("Email:")).toBeInTheDocument();
+    expect(screen.getByText("Channel:")).toBeInTheDocument();
+    expect(screen.getByText("Address:")).toBeInTheDocument();
+    expect(screen.getByText("City:")).toBeInTheDocument();
+    expect(screen.getByText("Postal Code:")).toBeInTheDocument();
+    expect(screen.getByText("Country:")).toBeInTheDocument();
+    expect(screen.getByText("Province:")).toBeInTheDocument();
+    expect(screen.getByText("Save")).toBeInTheDocument();
+    expect(screen.getByText("Cancel")).toBeInTheDocument();
+
+    // asserting test fields
+    expect(screen.getByLabelText("Name:")).toHaveValue("John Doe");
+    expect(screen.getByLabelText("Email:")).toHaveValue("john@example.com");
+    expect(screen.getByLabelText("Channel:")).toHaveValue("website");
+    expect(screen.getByLabelText("Address:")).toHaveValue("123 Main St");
+    expect(screen.getByLabelText("City:")).toHaveValue("Toronto");
+    expect(screen.getByLabelText("Postal Code:")).toHaveValue("12345");
+    expect(screen.getByLabelText("Country:")).toHaveValue("CA");
+    expect(screen.getByLabelText("Province:")).toHaveValue("ON");
   });
 
-  it("calls onSaveCustomer with form data on Save button click", () => {
+  it("Calls the onSaveCustomer function and onClose function when clicking on Save button", () => {
     render(<CustomerForm {...defaultProps} />);
-
-    // Mock form input data
     const formData = {
       name: "John Doe",
       email: "john@example.com",
-      channel: "email",
+      channel: "website",
       address: "123 Main St",
+      city: "Toronto",
       postal: "12345",
       country: "CA",
-      province: "",
+      province: "ON",
     };
 
-    // Fill in the form
     fireEvent.change(screen.getByLabelText("Name:"), {
       target: { value: formData.name },
     });
@@ -54,6 +86,9 @@ describe("CustomerForm Component", () => {
     fireEvent.change(screen.getByLabelText("Address:"), {
       target: { value: formData.address },
     });
+    fireEvent.change(screen.getByLabelText("City:"), {
+      target: { value: formData.city },
+    });
     fireEvent.change(screen.getByLabelText("Postal Code:"), {
       target: { value: formData.postal },
     });
@@ -64,34 +99,22 @@ describe("CustomerForm Component", () => {
       target: { value: formData.province },
     });
 
-    // Click the Save button
     fireEvent.click(screen.getByText("Save"));
-
-    // Verify that onSaveCustomerMock is called with the correct form data
     expect(onSaveCustomerMock).toHaveBeenCalledWith(formData);
 
-    // Verify that onCloseMock is called
     expect(onCloseMock).toHaveBeenCalled();
   });
 
-  it("displays error messages for invalid form data", () => {
+  it("Verify validation errors for email and name", () => {
     render(<CustomerForm {...defaultProps} />);
-
-    // Click the Save button without entering any data
     fireEvent.click(screen.getByText("Save"));
-
-    // Verify that error messages are displayed
     expect(screen.getByText("Customer Name is required")).toBeInTheDocument();
     expect(screen.getByText("Customer Email is required")).toBeInTheDocument();
   });
 
-  it("calls onClose on Cancel button click", () => {
+  it("calls onClose function when clicking Cancel button", () => {
     render(<CustomerForm {...defaultProps} />);
-
-    // Click the Cancel button
     fireEvent.click(screen.getByText("Cancel"));
-
-    // Verify that onCloseMock is called
     expect(onCloseMock).toHaveBeenCalled();
   });
 });

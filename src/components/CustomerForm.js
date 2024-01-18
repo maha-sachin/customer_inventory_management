@@ -10,6 +10,7 @@ const CustomerForm = ({ customer, onSaveCustomer, isOpen, onClose }) => {
     email: "",
     channel: "",
     address: "",
+    city: "",
     postal: "",
     province: "",
   };
@@ -17,6 +18,7 @@ const CustomerForm = ({ customer, onSaveCustomer, isOpen, onClose }) => {
   const [formData, setFormData] = useState({ ...emptyProps });
   const [errors, setErrors] = useState({});
   const [availableProvinces, setAvailableProvinces] = useState([]);
+
   const countriesData = useMemo(
     () => [
       {
@@ -49,19 +51,27 @@ const CustomerForm = ({ customer, onSaveCustomer, isOpen, onClose }) => {
     ],
     []
   );
-
+  const channels = [
+    { label: "Website", value: "website" },
+    { label: "Email", value: "email" },
+    { label: "Phone", value: "phone" },
+    { label: "Word Of Mouth", value: "word-of-mouth" },
+    { label: "Other", value: "other" },
+    { label: "Unknown", value: "unknown" },
+  ];
   useEffect(() => {
     setFormData({ ...customer });
-    if (customer.country) {
+  }, [customer]);
+  useEffect(() => {
+    if (formData.country) {
       const selectedCountry = countriesData.find(
-        (country) => country.code === customer.country
+        (country) => country.code === formData.country
       );
       setAvailableProvinces(selectedCountry?.provinces || []);
     }
-  }, [customer, countriesData]);
+  }, [customer, countriesData, formData.country]);
 
   const validateFormHandler = () => {
-    //TODO validation
     const newErrors = {};
     if (!formData.name.trim()) {
       newErrors.name = "Customer Name is required";
@@ -77,37 +87,24 @@ const CustomerForm = ({ customer, onSaveCustomer, isOpen, onClose }) => {
     }
     return newErrors;
   };
-
   const saveHandler = () => {
     const hasErrors = validateFormHandler();
-
     if (Object.keys(hasErrors).length > 0) {
       setErrors(hasErrors);
       return;
     }
-
     onSaveCustomer(formData);
-    onClose(); // Closed the modal after saving
-    console.log("Form Data:", JSON.stringify(formData, null, 2));
+    onClose();
   };
+
   const cancelHandler = () => {
-    setFormData(emptyProps); // Clear the form data when cancel is clicked
-    onClose(); // Close the modal
+    onClose();
   };
 
   const inputChangeHandler = (event) => {
     const { name, value } = event.target;
     setFormData((preVal) => ({ ...preVal, [name]: value }));
   };
-
-  const channels = [
-    { label: "Website", value: "website" },
-    { label: "Email", value: "email" },
-    { label: "Phone", value: "phone" },
-    { label: "Word Of Mouth", value: "word-of-mouth" },
-    { label: "Other", value: "other" },
-    { label: "Unknown", value: "unknown" },
-  ];
 
   return (
     <>
@@ -117,25 +114,11 @@ const CustomerForm = ({ customer, onSaveCustomer, isOpen, onClose }) => {
           onRequestClose={onClose}
           ariaHideApp={false}
           contentLabel="Customer Form"
+          data-testid="CustomerForm"
         >
-          <div className="bg-white p-8 rounded-lg shadow-md">
+          <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md mx-auto">
             <h2 className="text-2xl font-semibold mb-4">Edit Customer</h2>
             <form>
-              {/* <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-600">
-                  Name:
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    className="mt-1 p-2 w-full border rounded-md"
-                  />
-                </label>
-                {errors.name && (
-                  <p className="text-red-500 mt-1 text-sm">{errors.name}</p>
-                )}
-              </div> */}
               <CustomInput
                 label="Name:"
                 type="text"
@@ -173,7 +156,13 @@ const CustomerForm = ({ customer, onSaveCustomer, isOpen, onClose }) => {
                 value={formData.postal}
                 onChange={inputChangeHandler}
               />
-
+              <CustomInput
+                label="City:"
+                type="text"
+                name="city"
+                value={formData.city}
+                onChange={inputChangeHandler}
+              />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-600">
                   Country:
@@ -192,7 +181,6 @@ const CustomerForm = ({ customer, onSaveCustomer, isOpen, onClose }) => {
                   </select>
                 </label>
               </div>
-
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-600">
                   Province:
@@ -211,7 +199,6 @@ const CustomerForm = ({ customer, onSaveCustomer, isOpen, onClose }) => {
                   </select>
                 </label>
               </div>
-
               <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                 <button
                   type="button"
