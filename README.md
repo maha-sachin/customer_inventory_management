@@ -1,6 +1,29 @@
-# Getting Started with Create React App
+# WAVE INVOICE SYSTEM
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- list customers
+- edit cutomer details on form
+
+-I take pride in the thoughtful implementation of dropdowns for selecting the country and province within the CustomerForm component.The use of a dropdown for selecting the country provides users with a clear and standardized way to input their location information.Moreover, the dynamic population of provinces based on the selected country showcases a user-centric design. When users choose a country, the available provinces are intelligently filtered and presented, ensuring that users only see relevant options. This not only streamlines the data entry process but also prevents users from encountering unnecessary choices, reducing confusion and potential mistakes.
+
+-Secondly, the error handling in the fetchCustomers function-handling API request issues: handles errors that may arise during the data-fetching process,also provides valuable feedback for debugging and troubleshooting.
+
+## Overview
+
+This is a simple React application for managing customer data. It includes a reusable `CustomerList` component to display a list of customers and a `CustomerForm` component with modal functionality for editing customer details.
+
+## Instructions
+
+### Build and Run the Application
+
+1. Clone this repository:
+
+   ```bash
+   git clone https://github.com/your-username/customer-management.git
+   ```
+
+-I take pride in the thoughtful implementation of dropdowns for selecting the country and province within the CustomerForm component.The use of a dropdown for selecting the country provides users with a clear and standardized way to input their location information.Moreover, the dynamic population of provinces based on the selected country showcases a user-centric design. When users choose a country, the available provinces are intelligently filtered and presented, ensuring that users only see relevant options. This not only streamlines the data entry process but also prevents users from encountering unnecessary choices, reducing confusion and potential mistakes.
+
+-Secondly, the error handling in the fetchCustomers function-handling API request issues: handles errors that may arise during the data-fetching process,also provides valuable feedback for debugging and troubleshooting.
 
 ## Available Scripts
 
@@ -68,3 +91,11 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### Good to have:
+
+- language localizaiton (i18n)
+- add search/sort feauture for the table (conflicts with pagination).
+- paginaiton for table once the api supports it ().
+- add state management if the app gets larger
+-
